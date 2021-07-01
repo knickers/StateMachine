@@ -13,6 +13,7 @@ class StateMachine
     ~StateMachine();
     void init();
     void run();
+    void exec();
 
     // When a stated is added we pass the function that represents 
     // that state logic

@@ -18,21 +18,48 @@ void StateMachine::run(){
   // Early exit, no states are defined
   if(stateList->size() == 0) return;
 
-  // Initial condition
-  if(currentState == -1){
-    currentState = 0;
-  }
-  
   // Execute state logic and return transitioned
   // to state number. Remember the current state then check
   // if it wasnt't changed in state logic. If it was, we 
   // should ignore predefined transitions.
   int initialState = currentState;
   int next = stateList->get(currentState)->execute();
+
   if(initialState == currentState){
-    executeOnce = (currentState == next)?false:true;
-    currentState = next;
+    executeOnce = currentState != next;
+
+    if(next > -1 && next < stateList->size()){
+      currentState = next;
+    }
   }
+}
+
+/*
+ * Execute the entire state machine in one call.
+ * Returns when a state is reached that has no possible transitions
+ */
+void StateMachine::exec(){
+  // Early exit, no states are defined
+  if(stateList->size() == 0) return;
+
+  // Initial condition
+  int initialState = currentState = 0;
+  int next = 0;
+
+  do{
+    initialState = currentState;
+
+    // Execute state logic and return transitioned
+    // to state number. Remember the current state then check
+    // if it wasnt't changed in state logic. If it was, we
+    // should ignore predefined transitions.
+    next = stateList->get(currentState)->execute();
+
+    if(initialState == currentState){
+      executeOnce = currentState != next;
+      currentState = next;
+    }
+  }while(next > -1 && next < stateList->size());
 }
 
 /*

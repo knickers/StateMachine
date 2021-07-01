@@ -36,19 +36,17 @@ void State::addTransition(bool (*conditionFunction)(), int stateNumber){
  * Evals all transitions sequentially until one of them is true.
  * Returns:
  * The stateNumber of the transition that evaluates to true
- * -1 if none evaluate to true ===> Returning index now instead to avoid confusion between first run and no transitions
+ * -1 if none evaluate to true
  */
 int State::evalTransitions(){
-  if(transitions->size() == 0) return index;
-  bool result = false;
-  
+  if(transitions->size() == 0) return -1;
+
   for(int i=0;i<transitions->size();i++){
-    result = transitions->get(i)->conditionFunction();
-    if(result == true){
+    if(transitions->get(i)->conditionFunction()){
       return transitions->get(i)->stateNumber;
     }
   }
-  return index;
+  return -1;
 }
 
 /*
